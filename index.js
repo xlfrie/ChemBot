@@ -31,10 +31,11 @@ client.on('ready', () => {
 })
 
 client.on('message', message => {
-	if(message.author.bot || !message.content.startsWith(config.prefix)) return
+	if (message.author.bot || !message.content.startsWith(config.prefix)) return
 	const args = message.content.slice(config.prefix.length).split(/ +/)
 	const cmd = client.commands.get(args[0]) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]))
-	if(!cmd) return message.reply('No such command found for ' +  Discord.Util.cleanContent(config.prefix + args[0], message) + "")
+	if (!cmd) return message.reply('No such command found for ' + Discord.Util.cleanContent(config.prefix + args[0], message))
+	cmd.execute(message, args, client, Discord)
 })
 
 app.listen(8080)
