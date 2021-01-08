@@ -17,7 +17,7 @@ module.exports = {
 				case "commands":
 					var em = new Discord.MessageEmbed()
 						.setTitle("Commands")
-					var commands = {"Information": []}
+					var commands = {"Information": [], "Fun": []}
 					client.commands.forEach(cmd => commands[cmd.category].push(cmd.name))
 					for (var key in commands) {
 						em.addField("\u200b", `${key}:`)

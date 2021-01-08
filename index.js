@@ -20,6 +20,8 @@ app.get("*", (req, res) => {
 })
 
 client.on('ready', () => {
+	console.log(`Logged into ${client.user.tag}`)
+  db.prepare("CREATE TABLE IF NOT EXISTS cooldowns (id,ends,type)").run()
 	client.user.setPresence({
 		activity: {
 			type: "WATCHING",
@@ -27,7 +29,6 @@ client.on('ready', () => {
 		},
 		status: "dnd"
 	})
-	console.log(`Logged into ${client.user.tag}`)
 })
 
 client.on('message', message => {
@@ -35,6 +36,10 @@ client.on('message', message => {
 	const args = message.content.slice(config.prefix.length).split(/ +/)
 	const cmd = client.commands.get(args[0]) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]))
 	if (!cmd) return message.reply('No such command found for ' + Discord.Util.cleanContent(config.prefix + args[0], message))
+  if(cmd.category == "Fun") {
+    if(!db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id)) db.prepare("INSERT INTO balances (id,testtubes) VALUES (?,?)").run(message.author.id, 0)
+    db.prepare("CREATE TABLE IF NOT EXISTS balances (id,testtubes)").run()
+  }
 	cmd.execute(message, args, client, Discord)
 })
 
