@@ -12,6 +12,7 @@
   "dependencies": {
     "better-sqlite3": "^7.1.2",
     "discord.js": "^12.5.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "ms": "^2.1.3"
   }
 }

@@ -1,5 +1,5 @@
 const Database = require('better-sqlite3')
-const db = new Database("db.txt", { verbose: console.log })
+const db = new Database("db.txt")
 const config = require('./config.json')
 const Discord = require('discord.js')
 const client = new Discord.Client()
@@ -22,6 +22,8 @@ app.get("*", (req, res) => {
 client.on('ready', () => {
 	console.log(`Logged into ${client.user.tag}`)
   db.prepare("CREATE TABLE IF NOT EXISTS cooldowns (id,ends,type)").run()
+  db.prepare("CREATE TABLE IF NOT EXISTS balances (id,testtubes)").run()
+  db.prepare("CREATE TABLE IF NOT EXISTS replys (authorid,type,reply)").run()
 	client.user.setPresence({
 		activity: {
 			type: "WATCHING",
@@ -32,7 +34,7 @@ client.on('ready', () => {
 })
 
 client.on('message', message => {
-	if (message.author.bot || !message.content.startsWith(config.prefix)) return
+	if (message.author.bot || !message.content.startsWith(config.prefix) || message.channel.type !== "text") return
 	const args = message.content.slice(config.prefix.length).split(/ +/)
 	const cmd = client.commands.get(args[0]) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]))
 	if (!cmd) return message.reply('No such command found for ' + Discord.Util.cleanContent(config.prefix + args[0], message))

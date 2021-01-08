@@ -1,6 +1,6 @@
 module.exports = {
   name: "info",
-  description: "Get information for the bot.",
+  description: "Get information for ChemBot.",
   usage: "",
   aliases: ["invite", "information"],
   category: "Information",
