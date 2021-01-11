@@ -15,7 +15,7 @@ module.exports = {
     var lbNum = 0;
     lb.each(item => {
       lbNum = lbNum + 1
-      lbFields.push(`${lbNum}. ${item.tubes.toLocaleString()} - ${client.users.cache.get(item.id).tag}`)
+      lbFields.push(`**${lbNum}.** ${item.tubes.toLocaleString()} - **${client.users.cache.get(item.id).tag}**`)
     })
     var em = new Discord.MessageEmbed()
       .setTitle("Leaderboard")

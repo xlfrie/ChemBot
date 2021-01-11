@@ -6,14 +6,21 @@ const db = new Database("db.txt")
 module.exports = {
   name: "test",
   description: "Experiment every 1 minute to gain test tubes!",
-  usage: "[]",
+  usage: "",
   aliases: ["exper", "experiment"],
   category: "Fun",
   execute(message, args, client, Discord) {
+    const items = new Discord.Collection()
+    config.shop.forEach(item => items.set(item.name.split(/ +/).join("+"), item.multiplier))
     if (!db.prepare("SELECT * FROM cooldowns WHERE id = (?) AND type = (?)").get(message.author.id, "work")) db.prepare("INSERT INTO cooldowns (id,ends,type) VALUES (?,?,?)").run(message.author.id, new Date().getTime() - 1, "work")
     var ends = db.prepare("SELECT * FROM cooldowns WHERE id = (?) AND type = (?)").get(message.author.id, "work").ends
     if (ends > new Date().getTime()) return message.reply(`Please wait ${ms(ends - new Date().getTime(), { long: true })}.`)
-    var winnings = Math.floor(Math.random() * (10 - 1) + 1) < 3 ? 0 : Math.floor(Math.random() * (1200 - 250) + 250)
+    var winnings = Math.floor(Math.random() * (100 - 1) + 1) < 10 ? 0 : Math.floor(Math.random() * (1200 - 250) + 250)
+    var multiplier = 1;
+    JSON.parse(db.prepare("SELECT * FROM inventory WHERE userID = (?)").get(message.author.id).inv).forEach(item => {
+      multiplier = multiplier + items.get(item.split(/ +/).join("+"))
+    })
+    winnings = Math.ceil(winnings * multiplier)
     var bal = db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id)
     message.channel.send(new Discord.MessageEmbed()
       .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
@@ -23,6 +30,6 @@ module.exports = {
     )
     // if(config.staff.includes(message.author.id)) return;
     db.prepare("UPDATE balances SET testtubes = (?) WHERE id = (?)").run(bal.testtubes + winnings, message.author.id)
-    db.prepare("UPDATE cooldowns SET ends = (?) WHERE id = (?)").run(new Date().getTime() + ms("2m"), message.author.id)
+    db.prepare("UPDATE cooldowns SET ends = (?) WHERE id = (?) AND type = (?)").run(new Date().getTime() + ms("2m"), message.author.id, "work")
   }
 }

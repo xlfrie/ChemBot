@@ -23,7 +23,7 @@ module.exports = {
       const avatar = await loadImage(`${member.user.displayAvatarURL({ format: "png", size: 4096 })}`)
       ctx.drawImage(avatar, 125, 45, 100, 100)
       const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `Welcome_Image.png`)
-      client.channels.cache.get("797203700753236039").send(`Welcome ${member.user.toString()}!`, attachment)
+      client.channels.cache.get("797203700753236039").send(`Welcome ${member.user.toString()}! Please get roles in <#797998497076477992>!`, attachment)
       member.roles.add(client.guilds.cache.get("793684121511526400").roles.cache.get("793686843442331659"))
     })
   }

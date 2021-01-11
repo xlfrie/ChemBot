@@ -1,4 +1,7 @@
+const Database = require('better-sqlite3')
+const db = new Database("db.txt")
 const { MessageEmbed } = require('discord.js')
+
 module.exports = {
   update: (client, updateNum, changes) => {
     var updateEm = new MessageEmbed()
@@ -7,7 +10,7 @@ module.exports = {
     .setFooter("Keep on experimenting!", client.users.cache.get("796480356055777360").displayAvatarURL({ format: "png" }))
     .setTimestamp()
     .setColor(0x68e960)
-    client.channels.cache.get("793686033551982642").send(updateEm)
+    client.channels.cache.get("793686033551982642").send("<@&797868617097412639>", { embed: updateEm })
   },
   submissionsMsg: (client) => {
     client.channels.cache.get("797312863563022357").send(
@@ -23,5 +26,8 @@ For each submission please fill out the corresponding template with detail. ***D
 There is no template for suggestion. Just make sure your submission starts with **suggest**
 *Example:*
 > suggest give me developer`)
+  },
+  testtubeUser: (client) => {
+
   }
 }
