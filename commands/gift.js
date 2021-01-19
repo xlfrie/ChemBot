@@ -20,8 +20,6 @@ module.exports = {
     if (!db.prepare("SELECT * FROM balances WHERE id = (?)").get(user.id)) db.prepare("INSERT INTO balances (id,testtubes) VALUES (?,?)").run(user.id, 0)
     if (gifterBal.testtubes - gifting < 0) return message.reply("You can't do this!")
     message.reply(`Gifted \`${gifting.toLocaleString()}\` **test tubes** to ${user.tag}`)
-    console.log(gifting)
-    console.log(giftedBal.testtubes)
     db.prepare("UPDATE balances SET testtubes = (?) WHERE id = (?)").run(gifterBal.testtubes - gifting, message.author.id)
     db.prepare("UPDATE balances SET testtubes = (?) WHERE id = (?)").run(giftedBal.testtubes + gifting, user.id)
   }

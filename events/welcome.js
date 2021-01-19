@@ -25,6 +25,11 @@ module.exports = {
       const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `Welcome_Image.png`)
       client.channels.cache.get("797203700753236039").send(`Welcome ${member.user.toString()}! Please get roles in <#797998497076477992>!`, attachment)
       member.roles.add(client.guilds.cache.get("793684121511526400").roles.cache.get("793686843442331659"))
+      console.log("New user")
+    })
+    client.on("guildMemberRemove", (member) => {
+      if(member.guild.id != 793684121511526400) return;
+      client.channels.cache.get("797203700753236039").send(`**${member.user.tag}** has left the server.`)
     })
   }
 }

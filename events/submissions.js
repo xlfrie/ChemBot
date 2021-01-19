@@ -18,16 +18,15 @@ module.exports = {
           .setColor(6875488)
           .setDescription(`\`\`\`${lines.join("\n")}\`\`\``)
           .setFooter(`Use ,acceptsub ${message.id} or ,declinesub ${message.id} to accept/decline this bug report.`)
-        client.channels.cache.get("797330204997058580").send(bugEm)
+        client.channels.cache.get("798743254287122433").send(bugEm)
       } else if (message.content.toLowerCase().startsWith('suggest') && args[1]) {
-        message.reply("Thanks for your suggestion!").then(msg => setTimeout(() => { msg.delete() }, 4000))
         db.prepare("INSERT INTO submissions (type,subid,submission,submitter) VALUES (?,?,?,?)").run("suggestion", message.id, args.slice(1).join(" "), message.author.id)
         var suggestEm = new Discord.MessageEmbed()
           .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
           .setColor(6875488)
           .setFooter(`Use ,acceptsub ${message.id} or ,declinesub ${message.id} to accept/decline this suggestion.`)
           .setDescription(`${args.slice(1).join(" ")}`)
-          client.channels.cache.get("797330204997058580").send(suggestEm)
+          client.channels.cache.get("798743254287122433").send(suggestEm)
       }
       message.delete()
     })

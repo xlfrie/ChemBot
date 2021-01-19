@@ -15,10 +15,10 @@ module.exports = {
     if (!db.prepare("SELECT * FROM cooldowns WHERE id = (?) AND type = (?)").get(message.author.id, "work")) db.prepare("INSERT INTO cooldowns (id,ends,type) VALUES (?,?,?)").run(message.author.id, new Date().getTime() - 1, "work")
     var ends = db.prepare("SELECT * FROM cooldowns WHERE id = (?) AND type = (?)").get(message.author.id, "work").ends
     if (ends > new Date().getTime()) return message.reply(`Please wait ${ms(ends - new Date().getTime(), { long: true })}.`)
-    var winnings = Math.floor(Math.random() * (100 - 1) + 1) < 10 ? 0 : Math.floor(Math.random() * (1200 - 250) + 250)
+    var winnings = Math.floor(Math.random() * (100 - 1) + 1) < 5 ? 0 : Math.floor(Math.random() * (1200 - 250) + 250)
     var multiplier = 1;
     JSON.parse(db.prepare("SELECT * FROM inventory WHERE userID = (?)").get(message.author.id).inv).forEach(item => {
-      multiplier = multiplier + items.get(item.split(/ +/).join("+"))
+      multiplier = multiplier + (items.get(item.split(/ +/).join("+")) >= 1 ? items.get(item.split(/ +/).join("+")) + 1 : items.get(item.split(/ +/).join("+")))
     })
     winnings = Math.ceil(winnings * multiplier)
     var bal = db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id)

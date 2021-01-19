@@ -14,7 +14,7 @@ module.exports = {
           { name: "Commands", value: `${config.prefix}help commands\n\u200b` },
           { name: "__Invite__", value: "[Click here](https://discord.com/oauth2/authorize?client_id=796480356055777360&permissions=8&scope=bot)", inline: true },
           { name: "__Support Server__", value: "[Join Here](https://discord.gg/qcQYWqpXHB)", inline: true },
-          { name: "\u200b", value: `Servers: \`${client.guilds.cache.size}\`\nUsers: \`${client.users.cache.size}\``})
+          { name: "\u200b", value: `Servers: \`${client.guilds.cache.size.toLocaleString()}\`\nUsers: \`${client.users.cache.size.toLocaleString()}\``})
         .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
         .setTimestamp()
       message.channel.send(em)
