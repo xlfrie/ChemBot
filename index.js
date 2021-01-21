@@ -15,7 +15,9 @@ const app = express()
 const server = http.createServer(app);
 const dbl = new DBL(process.env.TOP, {webhookPort: 8080, webhookAuth: process.env.TOPPASS, webhookPath: "/top", webhookServer: server}, client)
 const fs = require('fs')
-mongoose.connect(process.env.MONGO, { useNewUrlParser: true, useUnifiedTopology: true })  
+mongoose.connect(process.env.MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
+const Schema = mongoose.Schema
+const Schemas = require("./schemas.js")(mongoose, Schema)
 client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -44,21 +46,21 @@ client.on('ready', () => {
   require("./events/welcome.js").execute(client, Discord)
   require("./events/submissions.js").execute(client, Discord)
   require("./events/reactionrole.js").execute(client, Discord)
-  require("./events/levels.js").execute(client, Discord)
+  require("./events/levels.js").execute(client, Discord, mongoose, Schemas)
   console.log(`Logged into ${client.user.tag}`)
-  db.prepare("CREATE TABLE IF NOT EXISTS cooldowns (id,ends,type)").run()
-  db.prepare("CREATE TABLE IF NOT EXISTS userRequests (id,requests)").run()
-  db.prepare("CREATE TABLE IF NOT EXISTS balances (id,testtubes)").run()
-  db.prepare("CREATE TABLE IF NOT EXISTS votes (id,voted,votedT)").run()
+  db.prepare("CREATE TABLE IF NOT EXISTS cooldowns (id,ends,type)").run() // done
+  db.prepare("CREATE TABLE IF NOT EXISTS userRequests (id,requests)").run() // done
+  db.prepare("CREATE TABLE IF NOT EXISTS balances (id,testtubes)").run() // done
+  db.prepare("CREATE TABLE IF NOT EXISTS votes (id,voted,votedT)").run() 
   db.prepare("CREATE TABLE IF NOT EXISTS replys (authorid,type,reply)").run()
   db.prepare("CREATE TABLE IF NOT EXISTS levels (guildid,levels)").run()
-  db.prepare("CREATE TABLE IF NOT EXISTS companys (company,users,owner,bal)").run()
+  db.prepare("CREATE TABLE IF NOT EXISTS companys (company,users,owner,bal)").run() // done
   db.prepare("CREATE TABLE IF NOT EXISTS submissions (type,subid,submission,submitter)").run()
   db.prepare("CREATE TABLE IF NOT EXISTS inventory (userID,inv)").run()
   setInterval(function() { client.user.presence.activities[0].name.split(/ +/)[0] != client.users.cache.size ? client.user.setPresence({ activity: { type: "WATCHING", name: client.users.cache.size.toLocaleString() + " users!" }, status: "dnd" }) : "" }, 60000)
 })
 
-client.on('message', message => {
+client.on('message', async message => {
   if (message.content.trim().startsWith("<@!796480356055777360>")) message.reply(`My prefix is ${config.prefix}`)
   if (message.channel.id == "798231192549720074") message.member.roles.remove(message.guild.roles.cache.get("798231081122922526"))
   if ((message.author.bot && message.author.id !== "796480356055777360") || !message.content.startsWith(config.prefix) || message.channel.type !== "text") return
@@ -67,14 +69,16 @@ client.on('message', message => {
   if (message.channel.id == 793684121511526403) return message.reply("Please use these commands in <#793684851021578241>!")
   if (!cmd || (cmd.category == "Dev" && !config.staff.includes(message.author.id)) || (cmd.category == "Access" && (!config.bugTesters.includes(message.author.id) && message.channel.id !== "798700035134980118"))) return message.reply('No such command found for ' + Discord.Util.cleanContent(config.prefix + args[0].toLowerCase(), message))
   if (cmd.category == "Fun" || cmd.category == "Access") {
-    if (!db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id)) db.prepare("INSERT INTO balances (id,testtubes,rebirths,rebirthMultiplier) VALUES (?,?,?,?)").run(message.author.id, 0, 0, 0)
+    var bals = mongoose.model("balance", Schemas.balances)
+    var userBal = await bals.findById(message.author.id) 
+    if (!userBal) new bals({ _id: message.author.id, bal: 0 }).save()
     if (!db.prepare("SELECT * FROM inventory WHERE userID = (?)").get(message.author.id)) db.prepare("INSERT INTO inventory (userID,inv) VALUES (?,?)").run(message.author.id, JSON.stringify([]))
     db.prepare("CREATE TABLE IF NOT EXISTS balances (id,testtubes)").run()
   }
   try {
     if (!generalCooldowns.has(message.author.id)) generalCooldowns.set(message.author.id, 0)
     if (generalCooldowns.get(message.author.id) + ms("2s") > new Date().getTime() && !config.active.includes(message.author.id)) return;
-    cmd.execute(message, args, client, Discord, dbl)
+    cmd.execute(message, args, client, Discord, dbl, mongoose, Schemas)
     generalCooldowns.set(message.author.id, new Date().getTime())
   }
   catch (err) {

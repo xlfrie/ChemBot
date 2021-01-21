@@ -9,11 +9,14 @@ module.exports = {
   usage: "",
   aliases: ["mini"],
   category: "Fun",
-  execute(message, args, client, Discord) {
+  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
     var game = Math.floor(Math.random() * (1 - 1 + 1) + 1)
-    if (!db.prepare("SELECT * FROM cooldowns WHERE id = (?) AND type = (?)").get(message.author.id, "minigame")) db.prepare("INSERT INTO cooldowns (id,ends,type) VALUES (?,?,?)").run(message.author.id, new Date().getTime() - 1, "minigame")
-    var cooldown = db.prepare("SELECT * FROM cooldowns WHERE id = (?) AND type = (?)").get(message.author.id, "minigame")
-    if (cooldown.ends > new Date().getTime()) return message.reply(`Please wait ${ms(cooldown.ends - new Date().getTime(), { long: true })}`)
+    var cooldowns = mongoose.model("cooldown", Schemas.cooldowns)
+    var cooldown = await cooldowns.findOne({ id: message.author.id, type: "minigame" })
+    if (!cooldown) {
+      cooldown = await new cooldowns({ ends: new Date().getTime() - 1, id: message.author.id, type: "work" }).save()
+    }
+    if (cooldown.ends > Date.now()) return message.reply(`Please wait ${ms(cooldown.ends - Date.now(), { long: true })}`)
     switch (game) {
       case 1:
         var num1 = Math.floor(Math.random() * (6 - 1 + 1) + 1)
@@ -93,6 +96,8 @@ module.exports = {
         }
         message.channel.send(`${message.author.toString()} Get the value of ${num1}x${num2}\n` + msg.join("\n"))
         const filter = (m) => m.author.id == message.author.id
+        var bals = mongoose.model("balance", Schemas.balances)
+        var bal = await bals.findById(message.author.id)
         message.channel.awaitMessages(filter, { max: 1, time: 10000, errors: ["time"] }).then(msg => {
           const items = new Discord.Collection()
           config.shop.forEach(item => items.set(item.name.split(/ +/).join("+"), item.multiplier))
@@ -104,17 +109,21 @@ module.exports = {
           var winnings = Math.ceil(Math.floor(Math.random() * (1500 - 500 + 1) + 500) * multiplier)
           if (winningNum.toString() == msg.first().content) {
             msg.first().reply(`The value of ${num1}x${num2} was ${winningNum}! You won \`${winnings.toLocaleString()}\` **test tubes**!`)
-            db.prepare("UPDATE balances SET testtubes = (?) WHERE id = (?)").run(Math.ceil(db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id).testtubes) + Math.ceil(winnings), message.author.id)
+            bal.bal = bal.bal + Math.ceil(winnings)
+            bal.save()
           } else {
             winnings = Math.floor(Math.random() * (250 - 100 + 1) + 100)
             msg.first().reply(`The value of ${num1}x${num2} was ${winningNum}. You were paid \`${winnings.toLocaleString()}\` **test tubes** for the effort.`)
-            db.prepare("UPDATE balances SET testtubes = (?) WHERE id = (?)").run(db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id).testtubes + winnings, message.author.id)
+            bal.bal = bal.bal + Math.ceil(winnings)
+            bal.save()
           }
         }).catch(collect => {
           message.reply("You didn't reply. I am charging you `100` **test tubes** for wasting my time.")
-          db.prepare("UPDATE balances SET testtubes = (?) WHERE id = (?)").run(db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id).testtubes - 100, message.author.id)
+          bal.bal = bal.bal - 100
+          bal.save()
         })
-        db.prepare("UPDATE cooldowns SET ends = (?) WHERE id = (?) AND type = (?)").run(new Date().getTime() + ms("4m"), message.author.id, "minigame")
+        cooldown.ends = Date.now() + ms("4m")
+        cooldown.save()
         break;
     }
   }

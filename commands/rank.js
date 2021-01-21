@@ -8,7 +8,7 @@ module.exports = {
   usage: "",
   aliases: ["level"],
   category: "Fun",  
-  async execute(message, args, client, Discord) {
+  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
     if (!db.prepare("SELECT * FROM levels WHERE guildid = (?)").get(message.guild.id)) db.prepare("INSERT INTO levels (guildid,levels) VALUES (?,?)").run(message.guild.id, JSON.stringify({}))
     var levels = JSON.parse(db.prepare("SELECT * FROM levels WHERE guildid = (?)").get(message.guild.id).levels)
     if (!levels[message.author.id]) {

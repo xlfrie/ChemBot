@@ -8,7 +8,7 @@ module.exports = {
   usage: "[@User]",
   aliases: ["bal", "money"],
   category: "Fun",
-  async execute(message, args, client, Discord) {
+  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
     var bal = new Discord.MessageEmbed()
     .setTimestamp()
     .setColor(message.member.displayHexColor == "#000000" ? "#68e960" : message.member.displayHexColor)
@@ -20,10 +20,12 @@ module.exports = {
         multipliers.set(item, config.shop.find(shopIt => shopIt.name == item).multiplier)
       })
       multipliers.sort((a, b) => b - a)
+      var balance = mongoose.model("balance", Schemas.balances)
+      var userBal = await balance.findById(message.author.id)
       var inv = multipliers.map(item => multipliers.findKey(it => it == item)).join("\n")
       var rebirth = db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id).rebirthMultiplier + 1
       if(inv.length == 0) inv = "No items found."
-      bal.setDescription(`**Balance**: ${db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id).testtubes.toLocaleString()} test tubes\n\n**Inventory**:\n${inv}`)
+      bal.setDescription(`**Balance**: ${userBal.bal.toLocaleString()} test tubes\n\n**Inventory**:\n${inv}`)
       .setAuthor(message.author.tag, message.author.displayAvatarURL({  dynamic:true  }))
     } else {
       var user = message.mentions.users.first() || await client.users.fetch(args[1])

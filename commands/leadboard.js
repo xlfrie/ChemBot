@@ -7,13 +7,15 @@ module.exports = {
   usage: "",
   aliases: ["lb"],
   category: "Fun",
-  async execute(message, args, client, Discord) {
+  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
     switch (args[1] ? args[1].toLowerCase() : args[1]) {
       case 'tubes':
       default:
         var lb = new Discord.Collection()
-        db.prepare("SELECT * FROM balances").all().forEach(item => {
-          if(client.users.cache.get(item.id)) lb.set(item.testtubes, { tubes: item.testtubes, id: item.id })
+        var bals = mongoose.model("balance", Schemas.balances)
+        var rawLb = await bals.find()
+        rawLb.forEach(item => {
+          if(client.users.cache.get(item._id)) lb.set(item.bal, { tubes: item.bal, id: item._id })
         })
         lb.sort((itemA, itemB) => parseInt(itemB.tubes) - parseInt(itemA.tubes))
         var lbFields = []
