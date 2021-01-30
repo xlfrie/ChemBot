@@ -5,7 +5,7 @@ const db = new Database("db.txt")
 
 module.exports = {
   name: "test",
-  description: "Experiment every 1 minute to gain test tubes!",
+  description: "Experiment every 2 minutes to gain test tubes!",
   usage: "",
   aliases: ["exper", "experiment"],
   category: "Fun",
@@ -21,9 +21,19 @@ module.exports = {
     if (ends > new Date().getTime()) return message.reply(`Please wait ${ms(ends - new Date().getTime(), { long: true })}.`)
     var winnings = Math.floor(Math.random() * (100 - 1) + 1) < 5 ? 0 : Math.floor(Math.random() * (1200 - 250) + 250)
     var multiplier = 1;
-    JSON.parse(db.prepare("SELECT * FROM inventory WHERE userID = (?)").get(message.author.id).inv).forEach(item => {
+    var inventories = mongoose.model("inventorie", Schemas.inventories)
+    var inventory = await inventories.findById(message.author.id)
+    inventory.inv.forEach(item => {
       multiplier = multiplier + (items.get(item.split(/ +/).join("+")) >= 1 ? items.get(item.split(/ +/).join("+")) + 1 : items.get(item.split(/ +/).join("+")))
     })
+    var companys = mongoose.model("companie", Schemas.companies)
+    var company = (await companys.find()).find(company => company.users.includes(message.author.id))
+    if(company && company.multipliers) {
+      company.multipliers.forEach(it => {
+        multiplier = multiplier + config.cShop.find(item => item.name == it).multiplier
+      })
+    } 
+    console.log(multiplier)
     winnings = Math.ceil(winnings * multiplier)
     var bals = mongoose.model("balance", Schemas.balances)
     var bal = await bals.findById(message.author.id)

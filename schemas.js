@@ -50,6 +50,10 @@ module.exports = (mongoose, Schema) => {
       bal: {
         type: Number,
         required: true
+      },
+      multipliers: {
+        type: Array,
+        required: true
       }
     }),
     crequests: new Schema({
@@ -68,6 +72,16 @@ module.exports = (mongoose, Schema) => {
         required: true
       },
       levels: {
+        type: Map,
+        required: true
+      }
+    }),
+    vouchers: new Schema({
+      code: {
+        type: String,
+        required: true
+      },
+      data: {
         type: Map,
         required: true
       }

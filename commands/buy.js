@@ -8,7 +8,9 @@ module.exports = {
   usage: "<item ID>",
   aliases: [],
   category: "Fun",
-  execute(message, args, client, Discord) {
+  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+    var bals = mongoose.model("balance", Schemas.balances)
+    var invs = mongoose.model("inventorie", Schemas.inventories)
     const items = new Discord.Collection()
     config.shop.forEach(item => items.set(item.name, { name: item.name, price: item.price, acquirable: item.acquirable, multiplier: item.multiplier }))
     items.sort((itemA, itemB) => itemB.price - itemA.price)
@@ -17,12 +19,12 @@ module.exports = {
       items.set(item.name, { name: item.name, price: item.price, acquirable: item.acquirable, multiplier: item.multiplier, id: loop })
       loop++
     })
-    var buyerBal = db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id)
+    var buyerBal = await bals.findById(message.author.id)
     if (!args.slice(1).join(" ") || !items.find(item => item.id == args[1])) return message.reply("Please provide a valid item ID to buy.")
     var item = items.find(item => item.id == args[1])
-    if ((buyerBal.testtubes - item.price) < 0) return message.reply("You don't have enough to do this!")
-    var buyerInv = db.prepare("SELECT * FROM inventory WHERE userID = (?)").get(message.author.id)
-    if (JSON.parse(buyerInv.inv).filter(invItem => invItem == item.name).length == item.acquirable) return message.reply("You already have the max amount of this!")
+    if ((buyerBal.bal - item.price) < 0) return message.reply("You don't have enough to do this!")
+    var buyerInv = await invs.findById(message.author.id)
+    if (buyerInv.inv.filter(invItem => invItem == item.name).length == item.acquirable) return message.reply("You already have the max amount of this!")
     const filter = (reaction, user) => {
       return ['❌', '✅'].includes(reaction.emoji.name) && user.id === message.author.id;
     };
@@ -33,10 +35,10 @@ module.exports = {
         switch (reaction.emoji.name) {
           case "✅":
             msg.reactions.removeAll()
-            buyerInv.inv = JSON.parse(buyerInv.inv)
             buyerInv.inv.push(item.name)
-            db.prepare("UPDATE balances SET testtubes = (?) WHERE id = (?)").run(buyerBal.testtubes - item.price, message.author.id)
-            db.prepare("UPDATE inventory SET inv = (?) WHERE userID = (?)").run(JSON.stringify(buyerInv.inv), message.author.id)
+            buyerInv.save()
+            buyerBal.bal = buyerBal.bal - item.price
+            buyerBal.save()
             message.reply(`Sucessfully bought **${item.name}** for **${item.price.toLocaleString()} test tubes**!`)
             break;
           case "❌":

@@ -8,11 +8,11 @@ module.exports = async (client, message, args, Discord, mongoose, Schemas) => {
   var company = (await companys.find()).find(company => company.users.includes(message.author.id))
   if (company) return message.reply("You are already in a company!")
   if (args[2].length > 4) return message.reply("The maximum length for a company name is four letters.")
-  if (!/^[a-zA-Z]+$/.test(args[2])) return message.reply("We only support a-z letters!")
+  if (!/^[A-Za-z0-9_.]+$/.test(args[2])) return message.reply("We only support a-z letters!")
   if (noName.includes(args[2].toLowerCase())) return message.reply("This name is not allowed!")
   if ((await companys.find()).find(company => company.name.toLowerCase() == args[2].toLowerCase())) return message.reply("This company name is already taken!")
   var companyData = []
   companyData.push(message.author.id)
-  new companys({ name: args[2], users: companyData, owner: message.author.id, bal: 0 }).save()
+  new companys({ name: args[2], users: companyData, owner: message.author.id, bal: 0, multipliers: [] }).save()
   message.reply("Created company " + Discord.Util.cleanContent(args[2], message) + "!")
 }

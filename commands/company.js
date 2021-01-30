@@ -1,6 +1,6 @@
 const Database = require('better-sqlite3')
 const db = new Database("db.txt")
-var verified = ["CMBT","breb"]
+var verified = ["DEV", "breb", "PRV8"]
 
 module.exports = {
   name: "company",
@@ -14,7 +14,7 @@ module.exports = {
         require("../companys/create.js")(client, message, args, Discord, mongoose, Schemas)
         break;
       default:
-      var companys = mongoose.model("companie", Schemas.companies)
+        var companys = mongoose.model("companie", Schemas.companies)
         var company = args[1] ? (await companys.find()).find(company => company.name.toLowerCase() == args[1].toLowerCase()) : (await companys.find()).find(company => company.users.includes(message.author.id))
         if (!company) return message.reply("No company found.")
         var members = []
@@ -47,8 +47,14 @@ module.exports = {
       case 'help':
         require("../companys/help.js")(client, message, args, Discord, mongoose, Schemas)
         break;
-        case 'delete':
+      case 'delete':
         require("../companys/delete.js")(client, message, args, Discord, mongoose, Schemas)
+        break;
+      case 'shop':
+        require("../companys/shop.js")(client, message, args, Discord, mongoose, Schemas)
+        break;
+      case 'buy':
+        require("../companys/buy.js")(client, message, args, Discord, mongoose, Schemas)
         break;
     }
   }

@@ -1,5 +1,6 @@
 const ms = require('ms')
 const Database = require('better-sqlite3')
+const crypto = require('crypto')
 const db = new Database("db.txt")
 const mongoose = require('mongoose')
 const config = require('./config.json')
@@ -31,6 +32,8 @@ app.get("*", (req, res) => {
   console.log(req.headers["user-agent"])
 })
 
+client.on("rateLimit", rateLimitInfo => console.log(rateLimitInfo))
+
 client.on('ready', () => {
   dbl.webhook.on('vote', vote => {
     if(!db.prepare("SELECT * FROM votes WHERE id = (?)").get(vote.user)) db.prepare("INSERT INTO votes (id) VALUES (?)").run(vote.user)
@@ -53,7 +56,7 @@ client.on('ready', () => {
   db.prepare("CREATE TABLE IF NOT EXISTS balances (id,testtubes)").run() // done
   db.prepare("CREATE TABLE IF NOT EXISTS votes (id,voted,votedT)").run() 
   db.prepare("CREATE TABLE IF NOT EXISTS replys (authorid,type,reply)").run()
-  db.prepare("CREATE TABLE IF NOT EXISTS levels (guildid,levels)").run()
+  db.prepare("CREATE TABLE IF NOT EXISTS levels (guildid,levels)").run() // done
   db.prepare("CREATE TABLE IF NOT EXISTS companys (company,users,owner,bal)").run() // done
   db.prepare("CREATE TABLE IF NOT EXISTS submissions (type,subid,submission,submitter)").run()
   db.prepare("CREATE TABLE IF NOT EXISTS inventory (userID,inv)").run()
@@ -67,13 +70,15 @@ client.on('message', async message => {
   const args = message.content.slice(config.prefix.length).split(/ +/)
   const cmd = client.commands.get(args[0].toLowerCase()) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0].toLowerCase()))
   if (message.channel.id == 793684121511526403) return message.reply("Please use these commands in <#793684851021578241>!")
+  if(message.channel.id == 778802622878187540) return
   if (!cmd || (cmd.category == "Dev" && !config.staff.includes(message.author.id)) || (cmd.category == "Access" && (!config.bugTesters.includes(message.author.id) && message.channel.id !== "798700035134980118"))) return message.reply('No such command found for ' + Discord.Util.cleanContent(config.prefix + args[0].toLowerCase(), message))
   if (cmd.category == "Fun" || cmd.category == "Access") {
     var bals = mongoose.model("balance", Schemas.balances)
-    var userBal = await bals.findById(message.author.id) 
+    var userBal = await bals.findById(message.author.id)
+    var invs = mongoose.model("inventorie", Schemas.inventory)
+    var inv = await invs.findById(message.author.id)
     if (!userBal) new bals({ _id: message.author.id, bal: 0 }).save()
-    if (!db.prepare("SELECT * FROM inventory WHERE userID = (?)").get(message.author.id)) db.prepare("INSERT INTO inventory (userID,inv) VALUES (?,?)").run(message.author.id, JSON.stringify([]))
-    db.prepare("CREATE TABLE IF NOT EXISTS balances (id,testtubes)").run()
+    if (!inv) new invs({ _id: message.author.id, inv: [] }).save()
   }
   try {
     if (!generalCooldowns.has(message.author.id)) generalCooldowns.set(message.author.id, 0)

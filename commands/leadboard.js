@@ -27,7 +27,7 @@ module.exports = {
           lbFields = []
           lb.first(lbShow).slice(lbShow - 10).filter(lbIt => client.users.cache.get(lbIt.id) != undefined).forEach(item => {
             var user = client.users.cache.get(item.id)
-            if (user) lbNum++ , lbFields.push(`**${lbNum}.** ${item.tubes.toLocaleString()} - **${user.tag}**`);
+            if (user) lbNum++ , lbFields.push(`**${lbNum}.** ${item.tubes.toLocaleString()} **test tubes** - **${user.tag}**`);
           })
           em = new Discord.MessageEmbed()
             .setTitle("Leaderboard")
@@ -38,14 +38,14 @@ module.exports = {
         }
         rendertubes(false)
         message.channel.send(em).then(msg => {
-          msg.react("⬅️").then(msg.react("❌").then(msg.react("➡️")))
+          msg.react("<:Leftarrow:803813734900039681>").then(msg.react("❌").then(msg.react("<:Rightarrow:803813735461421078>")))
           const filter = (reaction, user) => {
-            return ['❌', '⬅️', '➡️'].includes(reaction.emoji.name) && user.id === message.author.id;
+            return ['❌', 'Leftarrow', 'Rightarrow'].includes(reaction.emoji.name) && user.id === message.author.id;
           }
           var collector = msg.createReactionCollector(filter, { time: 60000 })
           collector.on("collect", reaction => {
             switch (reaction.emoji.name) {
-              case '➡️':
+              case 'Rightarrow':
                 if (lb.size > lbShow) {
                   lbShow = lbShow + 10
                   rendertubes(true, msg)
@@ -54,7 +54,7 @@ module.exports = {
               case '❌':
                 msg.reactions.removeAll()
                 break;
-              case "⬅️":
+              case "Leftarrow":
                 if (lbShow != 10) {
                   lbShow = lbShow - 10
                   lbNum = lbNum - 10
@@ -73,9 +73,10 @@ module.exports = {
       case "lvls":
       case "level":
         var levels = new Discord.Collection()
-        var dbLevels = JSON.parse(db.prepare("SELECT * FROM levels WHERE guildid = (?)").get(message.guild.id).levels)
-        Object.keys(dbLevels).forEach(lvl => {
-          levels.set(lvl, { xp: dbLevels[lvl].totalXp, userID: lvl })
+        var lvls = mongoose.model("level", Schemas.levels)
+        var dbLevels = await lvls.findOne({ guildid: message.guild.id })
+        Array.from(dbLevels.levels.keys()).forEach(lvl => {
+          levels.set(lvl, { xp: dbLevels.levels.get(lvl).totalXp, userID: lvl })
         })
         levels.sort((a, b) => b.xp - a.xp)
         function renderlvls(edited) {

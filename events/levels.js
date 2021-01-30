@@ -13,10 +13,8 @@ module.exports = {
       var level = mongoose.model("level", Schemas.levels)
       var levels = await level.findOne({ guildid: message.guild.id })
       if(!levels) levels = await new level({ guildid: message.guild.id, levels: {} }).save()
-      console.log(levels)
       if(!levels.levels.get(message.author.id)) {
         levels.levels.set(message.author.id, {"level":1,"xp":0,"xpNeeded": expNeeded,"totalXp":0})
-        levels.save()
       }
       var cooldowns = mongoose.model("cooldown", Schemas.cooldowns)
       var cooldown = await cooldowns.findOne({ id: message.author.id, type: "level" })
@@ -31,7 +29,7 @@ module.exports = {
         levels.levels.get(message.author.id).xp = 0
         message.reply("GG, you just leveled up to level " + levels.levels.get(message.author.id).level + "!")
       }
-      console.log((await levels.save()))
+      level.updateOne({guildid:message.guild.id}, levels).then()
       cooldown.ends = Date.now() + ms("1m")
       cooldown.save()
     })

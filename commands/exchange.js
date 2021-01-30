@@ -8,17 +8,20 @@ module.exports = {
   usage: "<type>",
   aliases: [],
   category: "Fun",
-  execute(message, args, client, Discord) {
-    switch(args[1].toLowerCase()) {
+  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+    switch(args[1].toLowerCase() || args[1]) {
       case "xp":
       if(config.noLevel.includes(message.guild.id)) return message.reply("This server doesn't support this!")
-      var levels = JSON.parse(db.prepare("SELECT * FROM levels WHERE guildid = (?)").get(message.guild.id).levels)
-      if (!levels[message.author.id]) {
-        levels[message.author.id] = { "level": 1, "xp": 0, "xpNeeded": 110, "totalXp": 0 }
-        db.prepare("UPDATE levels SET levels = (?) WHERE guildid = (?)").run(JSON.stringify(levels), message.guild.id)
+      var levelModel = mongoose.model("level", Schemas.levels)
+      var bals = mongoose.model("balance", Schemas.balances)
+      var bal = await bals.findById(message.author.id)
+      var levels = await levelModel.findOne({ guildid: message.guild.id })
+      if (!levels.levels.get(message.author.id)) {
+        levels.levels.set(message.author.id, { "level": 1, "xp": 0, "xpNeeded": 110, "totalXp": 0 })
+        levels.save()
       }
-      if(levels[message.author.id].totalXp == 0) return message.reply("Please gain some xp before exchanging!")
-      var ExchangedAmount = Math.ceil(levels[message.author.id].totalXp * 11)
+      if(levels.levels.get(message.author.id).totalXp == 0) return message.reply("Please gain some xp before exchanging!")
+      var ExchangedAmount = Math.ceil(levels.levels.get(message.author.id).totalXp * 11)
       message.reply("Are you sure you want to lose **all your xp** for `" + ExchangedAmount.toLocaleString() + "` test tubes?").then(msg => msg.react("✅").then(() => {
       msg.react("❌")
           const filter = (reaction, user) => {
@@ -28,10 +31,12 @@ module.exports = {
         var reaction = collected.first()
         switch (reaction.emoji.name) {
           case "✅":
-            message.reply("Exchanged " + levels[message.author.id].totalXp.toLocaleString() + " xp for " + ExchangedAmount.toLocaleString() + " test tubes!")
-            delete levels[message.author.id]
-            db.prepare("UPDATE levels SET levels = (?) WHERE guildid = (?)").run(JSON.stringify(levels),message.guild.id)
-            db.prepare("UPDATE balances SET testtubes = (?) WHERE id = (?)").run(db.prepare("SELECT * FROM balances WHERE id = (?)").get(message.author.id).testtubes + ExchangedAmount, message.author.id)
+            message.reply("Exchanged " + levels.levels.get(message.author.id).totalXp.toLocaleString() + " xp for " + ExchangedAmount.toLocaleString() + " test tubes!")
+            levels.levels.delete(message.author.id)
+            levels.save()
+            bal.bal = bal.bal + ExchangedAmount
+            bal.save()
+            msg.reactions.removeAll()
             break;
           case "❌":
             msg.reactions.removeAll()
