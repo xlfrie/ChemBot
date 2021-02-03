@@ -47,7 +47,7 @@ client.on('ready', () => {
     client.user.setPresence({ activity: { type: "WATCHING", name: client.users.cache.size.toLocaleString() + " users!" }, status: "dnd" })
   }, 1000)
   require("./events/welcome.js").execute(client, Discord)
-  require("./events/submissions.js").execute(client, Discord)
+  require("./events/submissions.js").execute(client, Discord, Schemas, mongoose)
   require("./events/reactionrole.js").execute(client, Discord)
   require("./events/levels.js").execute(client, Discord, mongoose, Schemas)
   console.log(`Logged into ${client.user.tag}`)

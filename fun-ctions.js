@@ -7,7 +7,7 @@ const db = new Database("db.txt")
 const { MessageEmbed } = require('discord.js')
 
 module.exports = {
-  update: async (client, updateNum, ping) => {
+  update: async (client, updateNum, ping = true) => {
     let changes = await client.channels.cache.get("798247525940985896").messages.fetch("799846200689033276")
     changes = changes.content.split("\n")
     var updateEm = new MessageEmbed()

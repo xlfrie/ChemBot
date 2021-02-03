@@ -85,6 +85,20 @@ module.exports = (mongoose, Schema) => {
         type: Map,
         required: true
       }
+    }),
+    submissions: new Schema({
+      type: {
+        type: String
+      },
+      _id: {
+        type: String
+      },
+      submission: {
+        type: String
+      },
+      submitter: {
+        type: String
+      }
     })
   }
 }

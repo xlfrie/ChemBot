@@ -8,9 +8,10 @@ module.exports = {
   usage: "<submission ID>",
   aliases: [],
   category: "Dev",
-  async execute(message, args, client, Discord) {
+  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
     if(!args[1]) return message.reply("Please provide a submission ID to proceed.");
-    var submission = db.prepare("SELECT * FROM submissions WHERE subid = (?)").get(args[1])
+    var submissions = mongoose.model('submission', Schemas.submissions)
+    var submission = await submissions.findById(args[1])
     if(!submission) return message.reply("Please provide a **valid** submission ID to proceed.")
     var subUser = await client.users.fetch(submission.submitter)
     switch (submission.type) {
@@ -33,7 +34,7 @@ module.exports = {
       client.channels.cache.get("793684780234571786").send(subEm).then(msg => msg.react("✅").then(msg.react("❌")))
       break;
     }
-    db.prepare("DELETE FROM submissions WHERE subid = (?)").run(args[1])
+    submissions.deleteOne({ _id: args[1] }).exec()
     message.delete()
   }
 }

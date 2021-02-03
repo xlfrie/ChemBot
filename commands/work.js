@@ -30,7 +30,7 @@ module.exports = {
     var company = (await companys.find()).find(company => company.users.includes(message.author.id))
     if(company && company.multipliers) {
       company.multipliers.forEach(it => {
-        multiplier = multiplier + config.cShop.find(item => item.name == it).multiplier
+       if(config.cShop.find(item => item.name == it)) multiplier = multiplier + config.cShop.find(item => item.name == it).multiplier
       })
     } 
     console.log(multiplier)
