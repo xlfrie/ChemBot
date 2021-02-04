@@ -5,7 +5,7 @@ module.exports = {
   description: "Put test tubes into a voucher.",
   usage: "<amount>",
   aliases: ["package"],
-  category: "Fun",
+  category: "Dev",
   async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
     var balances = mongoose.model("balance", Schemas.balances)
     var balance = await balances.findById(message.author.id)
