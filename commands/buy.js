@@ -8,7 +8,7 @@ module.exports = {
   usage: "<item ID>",
   aliases: [],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     var bals = mongoose.model("balance", Schemas.balances)
     var invs = mongoose.model("inventorie", Schemas.inventories)
     const items = new Discord.Collection()

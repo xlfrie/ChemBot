@@ -8,7 +8,7 @@ module.exports = {
   usage: "",
   aliases: [],
   category: "Dev",
-  async execute(message, args, client, Discord, dbl) {
+  async execute(message, args, client, Discord, Topgg) {
     switch (args[1] ? args[1].toLowerCase() : undefined) {
       default:
         message.reply("Please provide something to claim.")

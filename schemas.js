@@ -99,6 +99,17 @@ module.exports = (mongoose, Schema) => {
       submitter: {
         type: String
       }
+    }),
+    votes: new Schema({
+      _id: {
+        type: String
+      },
+      votes: {
+        type: Number
+      },
+      tag: {
+        type: String
+      }
     })
   }
 }

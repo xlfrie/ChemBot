@@ -7,7 +7,7 @@ module.exports = {
   usage: "<@User> <Amount of testtubes>",
   aliases: ["give"],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     var bals = mongoose.model("balance", Schemas.balances)
     var gifterBal = await bals.findById(message.author.id)
     if (!args[1] || !args[2]) return message.reply("Please provide a user to gift to and an ammount of test tubes to gift!")

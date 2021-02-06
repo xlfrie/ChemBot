@@ -8,7 +8,7 @@ module.exports = {
   usage: "<submission ID>",
   aliases: [],
   category: "Dev",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     if(!args[1]) return message.reply("Please provide a submission ID to proceed.");
     var submissions = mongoose.model('submission', Schemas.submissions)
     var submission = await submissions.findById(args[1])

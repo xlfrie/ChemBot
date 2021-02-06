@@ -69,5 +69,24 @@ There is no template for suggestion. Just make sure your submission starts with 
     reroll()
     new vouchers({ code: code, data: map}).save()
     })
+  },
+  voteLb: async (client, mongoose, Schemas) => {
+    var mod = mongoose.model("vote", Schemas.votes)
+    var votes = await mod.find()
+    var voteLb = new Discord.Collection()
+    votes.forEach(vote => {
+      voteLb.set(vote.tag, { votes: vote.votes, tag: vote.tag })
+    })
+    voteLb.sort((a,b) => b.votes - a.votes)
+    var i = 1
+    voteLb.first(10).forEach(vote => { voteLb.set(vote.tag, { votes: vote.votes, tag: vote.tag, num: i }); i++; })
+    var message = await client.channels.cache.get("807317673762488350").messages.fetch("807647905858584606")
+    var em = new Discord.MessageEmbed()
+    .setTitle("Votes Leaderboard")
+    .setColor(0x68e960)
+    .setFooter("Last edited")
+    .setDescription(voteLb.map(vote => `**${vote.num}**. ${vote.votes.toLocaleString()} - **${vote.tag}**`).join`\n`)
+    .setTimestamp()
+    message.edit(em)
   }
 }

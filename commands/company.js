@@ -9,7 +9,7 @@ module.exports = {
   usage: "<command>",
   aliases: ["c"],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     switch (args[1] ? args[1].toLowerCase() : undefined) {
       case 'create':
         require("../companys/create.js")(client, message, args, Discord, mongoose, Schemas)

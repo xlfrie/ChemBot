@@ -4,7 +4,7 @@ module.exports = {
   usage: "<code>",
   aliases: [],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     var vouchers = mongoose.model("voucher", Schemas.vouchers)
     var voucher = await vouchers.findOne({ code: args[1] })
     var bals = mongoose.model("balance", Schemas.balances)

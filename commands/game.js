@@ -9,7 +9,7 @@ module.exports = {
   usage: "",
   aliases: ["mini"],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     var game = Math.floor(Math.random() * (1 - 1 + 1) + 1)
     var cooldowns = mongoose.model("cooldown", Schemas.cooldowns)
     var cooldown = await cooldowns.findOne({ id: message.author.id, type: "minigame" })

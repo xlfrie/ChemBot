@@ -9,7 +9,7 @@ module.exports = {
   usage: "",
   aliases: ["exper", "experiment"],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     const items = new Discord.Collection()
     var cooldowns = mongoose.model("cooldown", Schemas.cooldowns)
     var cooldown = await cooldowns.findOne({ id: message.author.id, type: "work" })

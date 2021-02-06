@@ -7,7 +7,7 @@ module.exports = {
   usage: "",
   aliases: ["lb"],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     switch (args[1] ? args[1].toLowerCase() : args[1]) {
       case 'tubes':
       default:
@@ -17,7 +17,8 @@ module.exports = {
       case 'levels':
       case "lvls":
       case "level":
-        require('../leaderboards/level.js')(message, args, client, Discord, mongoose, Schemas)
+      case 'xp':
+        require('../leaderboards/levels.js')(message, args, client, Discord, mongoose, Schemas)
         break;
         case 'companies':
 

@@ -8,7 +8,7 @@ module.exports = {
   usage: "",
   aliases: ["level"],
   category: "Fun",  
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     var levelModel = mongoose.model("level", Schemas.levels)
     if (!(await levelModel.findOne({ guildid: message.guild.id }))) new levelModel({ guildid: message.guild.id, levels: {} }).save()
     var levels = await levelModel.findOne({ guildid: message.guild.id })

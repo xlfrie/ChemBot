@@ -1,6 +1,6 @@
 module.exports = {
-  name: "eval",
-  description: "Evaluate a script.",
+  name: "exec",
+  description: "Execute a script.",
   usage: "",
   aliases: [],
   category: "Dev",
@@ -17,7 +17,6 @@ module.exports = {
       let evaled = eval(code)
       if (typeof evaled !== "string")
         evaled = require("util").inspect(evaled)
-      message.channel.send(clean(evaled))
     } catch (err) {
       console.error(err)
       message.channel.send(`ERROR\`\`\`\n${clean(err)}\n\`\`\``);

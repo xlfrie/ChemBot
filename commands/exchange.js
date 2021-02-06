@@ -8,7 +8,7 @@ module.exports = {
   usage: "<type>",
   aliases: [],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     switch(args[1].toLowerCase() || args[1]) {
       case "xp":
       if(config.noLevel.includes(message.guild.id)) return message.reply("This server doesn't support this!")

@@ -8,7 +8,7 @@ module.exports = {
   usage: "[@User]",
   aliases: ["bal", "money"],
   category: "Fun",
-  async execute(message, args, client, Discord, dbl, mongoose, Schemas) {
+  async execute(message, args, client, Discord, Topgg, mongoose, Schemas) {
     var bal = new Discord.MessageEmbed()
     .setTimestamp()
     .setColor(message.member.displayHexColor == "#000000" ? "#68e960" : message.member.displayHexColor)
