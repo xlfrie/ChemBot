@@ -14,9 +14,7 @@ module.exports = {
     if (message.author.id !== "684573515948490793") return message.reply("This is a dev only command!")
     try {
       const code = args.slice(1).join(" ")
-      let evaled = eval(code)
-      if (typeof evaled !== "string")
-        evaled = require("util").inspect(evaled)
+      eval(code)
     } catch (err) {
       console.error(err)
       message.channel.send(`ERROR\`\`\`\n${clean(err)}\n\`\`\``);

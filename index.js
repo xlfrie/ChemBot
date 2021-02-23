@@ -8,9 +8,12 @@ const Discord = require('discord.js')
 const client = new Discord.Client({ partials: ['REACTION', 'MESSAGE'] })
 const generalCooldowns = new Discord.Collection()
 const fun = require("./fun-ctions.js")
+const Giveaway = require('./giveawayManager.js')
+globalThis.update = fun.update
 const express = require('express')
 const Topgg = require("@top-gg/sdk");
 const http = require('http');
+const ytdl = require('ytdl-core')
 
 const app = express()
 const webhook = new Topgg.Webhook(process.env.TOPPASS)
@@ -37,8 +40,8 @@ client.on("rateLimit", rateLimitInfo => console.log(rateLimitInfo))
 client.on('ready', () => {
   client.guilds.cache.forEach(guild => guild.members.fetch())
   setTimeout(function() {
-    client.user.setPresence({ activity: { type: "WATCHING", name: client.users.cache.size.toLocaleString() + " users!" }, status: "dnd" })
-  }, 1000)
+    client.user.setPresence({ activity: { type: "WATCHING", name: client.guilds.cache.reduce((accumulator, currentValue) => accumulator + (currentValue.memberCount == undefined ? 0 : parseInt(currentValue.memberCount)), 0).toLocaleString() + " users!" }, status: "dnd" })
+  }, 2000)
   setInterval(() => {
     api.postStats({
       serverCount: client.guilds.cache.size
@@ -58,7 +61,11 @@ client.on('ready', () => {
   db.prepare("CREATE TABLE IF NOT EXISTS companys (company,users,owner,bal)").run() // done
   db.prepare("CREATE TABLE IF NOT EXISTS submissions (type,subid,submission,submitter)").run()
   db.prepare("CREATE TABLE IF NOT EXISTS inventory (userID,inv)").run()
-  setInterval(function() { client.user.presence.activities[0].name.split(/ +/)[0] != client.users.cache.size ? client.user.setPresence({ activity: { type: "WATCHING", name: client.users.cache.size.toLocaleString() + " users!" }, status: "dnd" }) : "" }, 60000)
+  setInterval(function() { client.user.presence.activities[0].name.split(/ +/)[0] != client.users.cache.size ? client.user.setPresence({ activity: { type: "WATCHING", name: client.guilds.cache.reduce((accumulator, currentValue) => accumulator + (currentValue.memberCount == undefined ? 0 : parseInt(currentValue.memberCount)), 0).toLocaleString() + " users!" }, status: "dnd" }) : "" }, 60000)
+  var gmod = mongoose.model("giveaway", Schemas.giveaways)
+  gmod.find().then(giveaways => {
+    giveaways.forEach(giveaway => new Giveaway.Manager(giveaway, client, mongoose, Schemas))
+  })
 })
 
 client.on('message', async message => {
@@ -94,9 +101,10 @@ app.post("/top", webhook.middleware(), async (req, res) => {
   (await client.users.fetch(req.vote.user)).send("Thanks for voting! Voting on top.gg helps make us more well known! In the support server you can get rewards for voting!")
   var votemod = mongoose.model("vote", Schemas.votes)
   var votes = await votemod.findById(req.vote.user)
-  if(!votes) votes = new votemod({ _id: req.vote.user, votes: 0, tag: (await client.users.fetch(req.vote.user)).tag })
+  if(!votes) votes = new votemod({ _id: req.vote.user, votes: 0, tag: (await client.users.fetch(req.vote.user)).tag, voted: 1 })
   votes.votes++
   votes.tag = (await client.users.fetch(req.vote.user)).tag
+  votes.voted = Date.now()
   if(req.vote.isWeekend) votes.votes++
   await votes.save()
   fun.voteLb(client, mongoose, Schemas)

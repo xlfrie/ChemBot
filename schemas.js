@@ -54,6 +54,9 @@ module.exports = (mongoose, Schema) => {
       multipliers: {
         type: Array,
         required: true
+      },
+      verified: {
+        type: Boolean
       }
     }),
     crequests: new Schema({
@@ -108,6 +111,29 @@ module.exports = (mongoose, Schema) => {
         type: Number
       },
       tag: {
+        type: String
+      },
+      voted: {
+        type: Number
+      }
+    }),
+    giveaways: new Schema({
+      id: {
+        type: String
+      },
+      channel: {
+        type: String
+      },
+      prize: {
+        type: String
+      },
+      winners: {
+        type: Number
+      },
+      ends: {
+        type: Number
+      },
+      host: {
         type: String
       }
     })

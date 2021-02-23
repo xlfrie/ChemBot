@@ -14,7 +14,7 @@ module.exports = {
           { name: "Commands", value: `${config.prefix}help commands\n\u200b` },
           { name: "__Invite__", value: "[Click here](https://discord.com/oauth2/authorize?client_id=796480356055777360&permissions=8&scope=bot)", inline: true },
           { name: "__Support Server__", value: "[Join Here](https://discord.gg/qcQYWqpXHB)", inline: true },
-          { name: "\u200b", value: `Servers: \`${client.guilds.cache.size.toLocaleString()}\`\nUsers: \`${client.users.cache.size.toLocaleString()}\``})
+          { name: "\u200b", value: `Servers: \`${client.guilds.cache.size.toLocaleString()}\`\nUsers: \`${client.guilds.cache.reduce((accumulator, currentValue) => accumulator + (currentValue.memberCount == undefined ? 0 : parseInt(currentValue.memberCount)), 0).toLocaleString()}\``})
         .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
         .setTimestamp()
       message.channel.send(em)
@@ -37,7 +37,7 @@ module.exports = {
               .setColor(message.member.displayHexColor == "#000000" ? "#68e960" : message.member.displayHexColor)
               .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
               .setTimestamp()
-            var commands = { "Information": [], "Fun": [] }
+            var commands = { "Information": [], "Fun": [], "Giveaway": [] }
             client.commands.forEach(cmd => {
               if (!commands[cmd.category] && (cmd.category != "Dev" || config.staff.includes(message.author.id)) && (cmd.category != "Access" || config.bugTesters.includes(message.author.id))) commands[cmd.category] = []
               if((cmd.category != "Dev" || config.staff.includes(message.author.id)) && (cmd.category != "Access" || config.bugTesters.includes(message.author.id))) commands[cmd.category].push(cmd.name)

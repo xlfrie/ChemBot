@@ -3,7 +3,7 @@ module.exports = {
   description: "Kick a member.",
   usage: "<user> [reason]",
   aliases: [],
-  category: "Moderation",
+  category: "Dev",
   async execute(message, args, client, Discord) {
     if (!message.member.hasPermission(0x00000002)) return message.reply("You don't have permission to do this!")
     if (!args[1]) return message.reply("Please provide a user to kick.")

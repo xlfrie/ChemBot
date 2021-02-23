@@ -1,7 +1,6 @@
 const Database = require('better-sqlite3')
 const db = new Database("db.txt")
 const config = require('../config.json')
-var verified = ["DEV", "breb", "PRV8"]
 
 module.exports = {
   name: "company",
@@ -25,7 +24,7 @@ module.exports = {
         resources.sort((a, b) => b.multi - a.multi)
         company.users.forEach(async (user) => members.push(client.users.cache.get(user) ? client.users.cache.get(user).tag : (await client.users.fetch(user)).tag))
         var em = new Discord.MessageEmbed()
-          .setTitle((verified.includes(company.name) ? "<:Essential:801549298495389746> " : "") + company.name)
+          .setTitle((company.verified == true ? "<:Essential:801549298495389746> " : "") + company.name)
           .setColor(message.member.displayHexColor == "#000000" ? "#68e960" : message.member.displayHexColor)
           .setFooter(`Requested by ${message.author.tag}.`, message.author.displayAvatarURL({ dynamic: true }))
           .setDescription(`**Owner**: ${(await client.users.fetch(company.owner)).tag}\n\n**Funds**: ${company.bal.toLocaleString()} **test tubes**\n\n**Members**:\n${members.join("\n")}\n\n**Resources**:\n${resources.map(it => it.item).join('\n')}`)
