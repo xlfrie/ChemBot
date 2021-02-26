@@ -110,5 +110,5 @@ app.post("/top", webhook.middleware(), async (req, res) => {
   fun.voteLb(client, mongoose, Schemas)
 })
 
-app.listen(process.env.PORT)
+app.listen(process.env.PORT || 3000)
 client.login(process.env.TOKEN)
