@@ -1,0 +1,134 @@
+{
+  "prefix": ",",
+  "staff": [
+    "775092985100107776",
+    "684573515948490793"
+  ],
+  "bugTesters": [
+    "314772219102363648",
+    "775092985100107776",
+    "684573515948490793",
+    "796480356055777360"
+  ],
+  "active": [
+    "684573515948490793",
+    "775092985100107776"
+  ],
+  "noLevel":[
+    "741433505195753572"
+  ],
+  "teststories": {
+    "1": "Your latest formula was outstanding! You earned `{tubes}` **test tubes**!",
+    "2": "You recently had a massive breakthrough! You earned `{tubes}` **tubes**!",
+    "3": "You discovered a new chemical! You earned `{tubes}` **test tubes**!",
+    "4": "Congrats on the new lab! You earned `{tubes}` **tubes**!",
+    "5": "You quit your job to do experiments full time! You earned `{tubes}` **tubes**!",
+    "6": "Wife and the kids left for the weekend, experiment time! You earned `{tubes}` **test tubes**!"
+  },
+  "zerostories": {
+    "1": "Today was a fluke. You earned `{tubes}` **test tubes**.",
+    "2": "You ran out of test subjects. You earned `{tubes}` **tubes**",
+    "3": "Out of supplies, luckily tomorrow is grocery day. You earned `{tubes}` **test tubes**",
+    "4": "Is that a new job you speak of? I thought you liked being a scientist. >:( You earned {tubes} **tubes**."
+  },
+  "shop": [
+    {
+      "name": "Half dumb robot. (1.2x)",
+      "price": 25000,
+      "multiplier": 0.2,
+      "acquirable": 1
+    },
+    {
+      "name": "Super Computer. (1.5x)",
+      "price": 100000,
+      "multiplier": 0.5,
+      "acquirable": 1
+    },
+    {
+      "name": "Super Scientist Assistant (1.7x)",
+      "price": 300000,
+      "multiplier": 0.7,
+      "acquirable": 1
+    },
+    {
+      "name": "Molecular Reconstruction (25x)",
+      "price": 25000000,
+      "multiplier": 24,
+      "acquirable": 1 
+    },
+    {
+      "name": "Permanent Duckstar Energy Drink (2x)",
+      "price": 500000,
+      "multiplier": 1,
+      "acquirable": 1
+    },
+    {
+      "name": "Bluebull Energy Drink (1.6x)",
+      "price": 200000,
+      "multiplier": 0.6,
+      "acquirable": 1
+    },
+    {
+      "name": "Obsidian Glass Beakers (3x)",
+      "price": 700000,
+      "multiplier": 2,
+      "acquirable": 1
+    },
+    {
+      "name": "Caffeine Pills (4x)",
+      "price": 1000000,
+      "multiplier": 3,
+      "acquirable": 1
+    },
+    {
+      "name": "Particle Accelerator (50x)",
+      "price": 50000000,
+      "multiplier": 50,
+      "acquirable": 1
+    },
+    {
+      "name": "Antimatter Producer (100x)",
+      "price": 100000000,
+      "multiplier": 99,
+      "acquirable": 1
+    }
+  ],
+  "cShop": [
+    {
+      "name": "Legal Structure (1.5x)",
+      "price": 200000,
+      "multiplier": 0.5,
+      "acquirable": 1
+    },
+    {
+      "name": "Federal Permit (2.5x)",
+      "price": 500000,
+      "multiplier": 1.5,
+      "acquirable": 1
+    },
+    {
+      "name": "Insurance (4x)",
+      "price": 1000000,
+      "multiplier": 3,
+      "acquirable": 1
+    },
+    {
+      "name": "New Employees (3x)",
+      "price": 800000,
+      "multiplier": 2,
+      "acquirable": 1
+    },
+    {
+      "name": "Marketing (10x)",
+      "price": 10000000,
+      "multiplier": 9,
+      "acquirable": 1
+    },
+    {
+      "name": "Investments (25x)",
+      "price": 50000000,
+      "multiplier": 24,
+      "acquirable": 1
+    }
+  ]
+}
