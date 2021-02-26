@@ -21,7 +21,7 @@ module.exports = {
     var level = levels.levels.get(message.author.id).level
     const canvas = new createCanvas(350, 150)
     const ctx = canvas.getContext("2d")
-    const background = await loadImage('https://cdn.discordapp.com/attachments/762029072821387304/799388704384221214/LevelBG.png');
+    const background = await loadImage('https://cdn.discordapp.com/attachments/796479848360575009/814609821789323295/New_ChemBotLevel_bg.png');
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
     ctx.fillStyle = "#b0b0b090"
     ctx.beginPath()
@@ -60,7 +60,7 @@ module.exports = {
     ctx.arc(56, 76, 64 / 2, 0, 2 * Math.PI);
     ctx.clip()
     ctx.drawImage(pfp, 24, 44, 64, 64)
-    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `Welcome_Image.png`)
+    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `Rank.png`)
     message.reply(attachment)
   }
 }
